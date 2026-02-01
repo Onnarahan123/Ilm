@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Ilm</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+            margin: 0;
+            padding: 40px 20px;
+            color: white;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .suur-info {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 40px;
+        }
+        .suur-linn { font-size: 32px; font-weight: 600; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .suur-temp { font-size: 90px; font-weight: 200; margin: 10px 0; letter-spacing: -2px; }
+        .suur-ikoon { font-size: 40px; margin-bottom: 10px; }
+        .minmax { font-size: 18px; opacity: 0.9; font-weight: 500; }
+
+        .list { display: flex; flex-direction: column; gap: 15px; }
+        .kaart {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .k-linn { font-size: 18px; font-weight: 600; }
+        .k-temp { font-size: 28px; font-weight: 400; }
+        .k-ikoon { font-size: 24px; }
+        .loading { text-align: center; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <div id="app"><div class="loading">Laen ilmateadet...</div></div>
+
+    <script>
+        fetch('ilm.json?v=' + new Date().getTime())
+            .then(r => r.json())
+            .then(data => {
+                const app = document.getElementById('app');
+                app.innerHTML = '';
+
+                // 1. Esimene linn suurelt (Tallinn)
+                const peamine = data[0];
+                const header = document.createElement('div');
+                header.className = 'suur-info';
+                header.innerHTML = `
+                    <div class="suur-linn">${peamine.nimi}</div>
+                    <div class="suur-temp">${peamine.temp}°</div>
+                    <div class="minmax">${peamine.ikoon} | H: ${peamine.max}° L: ${peamine.min}°</div>
+                `;
+                app.appendChild(header);
+
+                // 2. Ülejäänud listina
+                const list = document.createElement('div');
+                list.className = 'list';
+
+                data.forEach((linn, index) => {
+                    if (index === 0) return; // Ära näita esimest topelt
+                    const div = document.createElement('div');
+                    div.className = 'kaart';
+                    div.innerHTML = `
+                        <div class="k-vasak">
+                            <div class="k-linn">${linn.nimi}</div>
+                            <div style="font-size:12px; opacity:0.8;">Sadu: ${linn.sadu}mm</div>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <div class="k-ikoon">${linn.ikoon}</div>
+                            <div class="k-temp">${linn.temp}°</div>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+                app.appendChild(list);
+            });
+    </script>
+</body>
+</html>
