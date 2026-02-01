@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Ilm Ultra</title>
+    <title>Ilm Ultra Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
             --bg-day: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
-            --bg-night: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            --card-bg: rgba(255,255,255,0.15);
-            --card-blur: blur(15px);
+            --bg-night: linear-gradient(180deg, #0b1026 0%, #2b32b2 100%);
+            --card-bg: rgba(255,255,255,0.12);
+            --card-border: rgba(255,255,255,0.2);
+            --card-blur: blur(20px);
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-            background: var(--bg-day); /* Vaikimisi päev */
-            margin: 0; color: white; min-height: 100vh; overflow-x: hidden; transition: background 1s ease;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            background: var(--bg-day);
+            margin: 0; color: white; min-height: 100vh; overflow-x: hidden; transition: background 1.5s ease;
+            -webkit-tap-highlight-color: transparent;
         }
         body.is-night { background: var(--bg-night); }
 
@@ -27,101 +29,151 @@
         
         /* Päike */
         .sun-anim {
-            position: absolute; top: -50px; right: -50px; width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(255,255,200,0.8) 0%, rgba(255,255,255,0) 70%);
-            border-radius: 50%; animation: spin 30s linear infinite;
+            position: absolute; top: -60px; right: -60px; width: 220px; height: 220px;
+            background: radial-gradient(circle, rgba(255,255,200,0.9) 0%, rgba(255,255,255,0) 60%);
+            border-radius: 50%; animation: sun-spin 40s linear infinite; filter: blur(5px);
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes sun-spin { 100% { transform: rotate(360deg); } }
 
-        /* Tähed (Öösel) */
-        .stars-anim {
-             background-image: 
-                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
-                radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0));
-            background-size: 200px 200px;
-            animation: twinkle 5s infinite;
+        /* Täiustatud Tähed */
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite; opacity: 0;
         }
-        @keyframes twinkle { 50% { opacity: 0.5; } }
+        @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
 
         /* Vihm/Lumi */
-        .rain-anim { background: url('https://i.imgur.com/VuT5t6W.png'); animation: rain 1s linear infinite; }
-        @keyframes rain { 0% { background-position: 0 0; } 100% { background-position: -20px 500px; } }
-        .snow-anim { background-image: radial-gradient(4px 4px at 100px 50px, #fff, transparent), radial-gradient(6px 6px at 200px 150px, #fff, transparent); background-size: 200px 200px; animation: snow 3s linear infinite; }
-        @keyframes snow { 100% { background-position: 500px 500px; } }
-
-        /* --- UI --- */
-        .container { padding: 60px 20px 30px 20px; max-width: 600px; margin: 0 auto; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .rain-anim { background: url('https://i.imgur.com/VuT5t6W.png'); animation: rain 0.8s linear infinite; opacity: 0.7; }
+        @keyframes rain { 0% { background-position: 0 0; } 100% { background-position: -10px 500px; } }
         
-        /* Nupud nüüd ilusti ümmargused */
-        .location-btn { 
-            width: 44px; height: 44px; display: flex; justify-content: center; align-items: center;
-            background: var(--card-bg); border: none; border-radius: 50%; color: white; cursor: pointer; backdrop-filter: var(--card-blur); font-size: 18px;
+        .snow-anim { 
+            background-image: radial-gradient(3px 3px at 100px 50px, #fff, transparent), radial-gradient(5px 5px at 200px 150px, #fff, transparent); 
+            background-size: 300px 300px; animation: snow 4s linear infinite; 
         }
-        .search-box { flex: 1; margin: 0 15px; position: relative; }
-        .search-input { width: 100%; padding: 12px 20px; border-radius: 25px; border: none; background: var(--card-bg); color: white; backdrop-filter: var(--card-blur); outline: none; font-size: 16px; }
+        @keyframes snow { 100% { background-position: 100px 300px; } }
+
+        /* --- UI KUJUNDUS --- */
+        .container { padding: 60px 20px 40px 20px; max-width: 600px; margin: 0 auto; }
+        
+        /* Ülemine riba - parandatud joondus */
+        .top-bar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 20px; gap: 10px; height: 44px;
+        }
+        
+        .icon-btn { 
+            width: 44px; height: 44px; flex-shrink: 0;
+            display: flex; justify-content: center; align-items: center;
+            background: var(--card-bg); border: 1px solid var(--card-border); 
+            border-radius: 50%; color: white; cursor: pointer; 
+            backdrop-filter: var(--card-blur); font-size: 18px; transition: transform 0.2s;
+        }
+        .icon-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
+        .icon-btn.loading i { animation: spin 1s linear infinite; }
+        
+        .search-box { 
+            flex: 1; position: relative; height: 44px;
+        }
+        .search-input { 
+            width: 100%; height: 100%; padding: 0 40px 0 20px; 
+            border-radius: 22px; border: 1px solid var(--card-border); 
+            background: var(--card-bg); color: white; 
+            backdrop-filter: var(--card-blur); outline: none; font-size: 17px; 
+            box-sizing: border-box;
+        }
         .search-input::placeholder { color: rgba(255,255,255,0.6); }
-        .search-results { position: absolute; top: 50px; width: 100%; background: rgba(20,20,40,0.95); border-radius: 15px; overflow: hidden; display: none; z-index: 100; backdrop-filter: blur(20px); }
-        .search-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-
-        /* Praegune ilm */
-        .current-weather { text-align: center; margin-bottom: 40px; }
-        .city-name { font-size: 38px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .temp-huge { font-size: 100px; font-weight: 200; letter-spacing: -4px; margin: 5px 0; line-height: 1; }
-        .desc { font-size: 24px; font-weight: 500; text-transform: capitalize; margin-bottom: 5px; opacity: 0.9; }
+        .search-icon { position: absolute; right: 15px; top: 12px; opacity: 0.6; pointer-events: none;}
         
-        /* Detailid */
-        .details-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 30px; }
-        .detail-card { background: var(--card-bg); backdrop-filter: var(--card-blur); border-radius: 18px; padding: 15px; text-align: center; }
-        .detail-icon { font-size: 22px; margin-bottom: 8px; opacity: 0.8; }
-        .detail-val { font-size: 17px; font-weight: 600; }
-        .detail-label { font-size: 13px; opacity: 0.6; }
+        .search-results { 
+            position: absolute; top: 55px; width: 100%; 
+            background: rgba(30,30,40,0.95); border-radius: 15px; 
+            overflow: hidden; display: none; z-index: 200; 
+            border: 1px solid var(--card-border); backdrop-filter: blur(30px);
+        }
+        .search-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 16px; }
 
-        /* 7 Päeva & Tunnivaade */
-        .forecast-title { font-size: 20px; font-weight: 600; margin-bottom: 15px; opacity: 0.9; }
-        .forecast-list { display: flex; flex-direction: column; gap: 10px; }
+        /* HOIATUS KAART */
+        .alert-card {
+            background: rgba(255, 59, 48, 0.25); border: 1px solid rgba(255, 59, 48, 0.4);
+            backdrop-filter: blur(10px); border-radius: 15px; padding: 15px;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 15px;
+            display: none; /* Peidetud vaikimisi */
+            animation: slideIn 0.5s ease;
+        }
+        .alert-icon { font-size: 24px; color: #ff6b6b; }
+        .alert-text { font-size: 14px; font-weight: 500; line-height: 1.3; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Peamine info */
+        .current-weather { text-align: center; margin-bottom: 30px; position: relative; z-index: 10; }
+        .city-name { font-size: 36px; font-weight: 700; text-shadow: 0 2px 15px rgba(0,0,0,0.2); margin-bottom: 5px; }
+        .temp-huge { font-size: 110px; font-weight: 200; letter-spacing: -5px; line-height: 1; text-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .desc { font-size: 22px; font-weight: 500; text-transform: capitalize; opacity: 0.9; margin-bottom: 5px; }
+        .hl-temp { font-size: 18px; font-weight: 500; opacity: 0.8; }
+
+        /* Detailide ruudustik */
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 30px; }
+        .detail-card { 
+            background: var(--card-bg); border: 1px solid var(--card-border); 
+            backdrop-filter: var(--card-blur); border-radius: 18px; padding: 15px 10px; text-align: center; 
+        }
+        .detail-icon { font-size: 20px; margin-bottom: 5px; opacity: 0.8; }
+        .detail-val { font-size: 16px; font-weight: 600; }
+        .detail-label { font-size: 11px; opacity: 0.6; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Ennustuse list */
+        .forecast-container { 
+            background: var(--card-bg); border: 1px solid var(--card-border); 
+            backdrop-filter: var(--card-blur); border-radius: 25px; padding: 20px; 
+        }
+        .forecast-header { font-size: 14px; opacity: 0.6; margin-bottom: 15px; text-transform: uppercase; font-weight: 600; display: flex; align-items: center; gap: 8px;}
         
-        .forecast-item { background: var(--card-bg); border-radius: 20px; backdrop-filter: var(--card-blur); overflow: hidden; transition: all 0.3s ease; }
-        .forecast-summary { 
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; cursor: pointer;
+        .forecast-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); 
+            cursor: pointer; position: relative;
         }
-        .f-day { width: 110px; font-weight: 600; font-size: 17px; }
-        .f-icon { font-size: 22px; text-align: center; width: 40px; }
-        .f-temp { text-align: right; width: 110px; font-size: 17px; }
-        .temp-max { font-weight: 600; margin-left: 10px; }
-        .temp-min { opacity: 0.6; }
+        .forecast-row:last-child { border-bottom: none; }
+        .f-day { width: 100px; font-weight: 500; font-size: 18px; }
+        .f-icon { font-size: 22px; width: 30px; text-align: center; }
+        .f-temps { width: 100px; text-align: right; font-size: 18px; }
+        .tm-low { opacity: 0.5; margin-right: 10px; }
+        .tm-high { font-weight: 600; }
 
-        /* Tunnivaate peidetud osa */
-        .hourly-details { 
-            display: none; /* Vaikimisi peidetud */
-            padding: 0 0 20px 20px;
-            overflow-x: auto; /* Horisontaalne kerimine */
-            white-space: nowrap;
-             scrollbar-width: none; /* Peida scrollbar Firefox */
+        /* Tunnivaate slider (avaneb klikkides) */
+        .hourly-slider { 
+            display: none; width: 100%; overflow-x: auto; 
+            padding: 15px 0 5px 0; white-space: nowrap; 
+            -webkit-overflow-scrolling: touch; /* Sujuv kerimine iOS */
+            scrollbar-width: none;
         }
-        .hourly-details::-webkit-scrollbar { display: none; /* Peida scrollbar Safari/Chrome */ }
-
-        .hour-card {
-            display: inline-block;
-            text-align: center;
-            padding: 15px 10px;
-            background: rgba(0,0,0,0.1);
-            border-radius: 15px;
-            margin-right: 10px;
-            min-width: 70px;
+        .hourly-slider::-webkit-scrollbar { display: none; }
+        .hour-item { 
+            display: inline-flex; flex-direction: column; align-items: center; 
+            margin-right: 20px; min-width: 50px; 
         }
-        .h-time { font-size: 14px; opacity: 0.7; margin-bottom: 5px; }
-        .h-icon { font-size: 24px; margin-bottom: 8px; }
-        .h-temp { font-size: 18px; font-weight: 600; }
-        .h-pop { font-size: 12px; color: #90cee6; margin-top: 5px; }
+        .h-time { font-size: 13px; opacity: 0.7; margin-bottom: 5px; }
+        .h-icon { font-size: 20px; margin-bottom: 5px; }
+        .h-temp { font-size: 16px; font-weight: 600; }
+        .h-rain { font-size: 11px; color: #7ad7ff; margin-top: 2px; }
 
-        /* Avatud olek */
-        .forecast-item.open { background: rgba(255,255,255,0.25); }
-        .forecast-item.open .hourly-details { display: block; }
+        .forecast-row.open .hourly-slider { display: flex; }
+        
+        /* RADAR MODAL */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 1000; display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-header {
+            height: 60px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; background: rgba(20,20,30,0.8); backdrop-filter: blur(10px);
+        }
+        .close-btn { color: white; font-size: 16px; font-weight: 600; background: none; border: none; cursor: pointer; }
+        .iframe-container { width: 100%; height: calc(100% - 60px); }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     </style>
 </head>
@@ -129,195 +181,321 @@
 
     <div id="anim-layer" class="weather-bg"></div>
 
+    <div id="radarModal" class="modal">
+        <div class="modal-header">
+            <span style="font-weight:700">Radar</span>
+            <button class="close-btn" onclick="closeRadar()">Sulge</button>
+        </div>
+        <div class="iframe-container" id="radarContainer"></div>
+    </div>
+
     <div class="container">
         <div class="top-bar">
-            <button class="location-btn" onclick="getMyLocation()"><i class="fas fa-location-arrow"></i></button>
+            <button class="icon-btn" id="gpsBtn" onclick="getMyLocation()"><i class="fas fa-location-arrow"></i></button>
             <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
                 <input type="text" class="search-input" id="citySearch" placeholder="Otsi linna..." onkeyup="searchCity(this.value)">
                 <div id="searchResults" class="search-results"></div>
             </div>
-            <button class="location-btn" style="opacity: 0.5"><i class="far fa-star"></i></button>
+            <button class="icon-btn" onclick="openRadar()"><i class="fas fa-map"></i></button>
         </div>
 
-        <div class="current-weather" id="main-view">
+        <div id="alertCard" class="alert-card">
+            <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="alert-text" id="alertMsg"></div>
+        </div>
+
+        <div class="current-weather">
             <div class="city-name" id="cityName">Laen...</div>
             <div class="desc" id="weatherDesc">...</div>
             <div class="temp-huge" id="currentTemp">--°</div>
-            <div style="font-size: 18px; opacity: 0.8">H: <span id="maxTemp">--</span>° L: <span id="minTemp">--</span>°</div>
+            <div class="hl-temp">H: <span id="maxTemp">--</span>°  L: <span id="minTemp">--</span>°</div>
         </div>
 
         <div class="details-grid">
             <div class="detail-card">
-                <div class="detail-icon"><i class="fas fa-temperature-high"></i></div>
+                <div class="detail-icon"><i class="fas fa-temperature-low"></i></div>
                 <div class="detail-val" id="feelsLike">--°</div>
                 <div class="detail-label">Tundub nagu</div>
             </div>
             <div class="detail-card">
                 <div class="detail-icon"><i class="fas fa-wind"></i></div>
-                <div class="detail-val" id="windSpeed">-- km/h</div>
-                <div class="detail-label">Tuul</div>
+                <div class="detail-val" id="windSpeed">--</div>
+                <div class="detail-label">Tuul m/s</div>
             </div>
             <div class="detail-card">
-                <div class="detail-icon"><i class="fas fa-droplet"></i></div>
+                <div class="detail-icon"><i class="fas fa-umbrella"></i></div>
                 <div class="detail-val" id="rainProb">--%</div>
                 <div class="detail-label">Sadu</div>
             </div>
         </div>
 
-        <div class="forecast-title"><i class="far fa-calendar-alt"></i> 7 päeva ennustus (vajuta)</div>
-        <div class="forecast-list" id="forecastList"></div>
+        <div class="forecast-container">
+            <div class="forecast-header"><i class="far fa-calendar-alt"></i> 7-Päeva prognoos</div>
+            <div id="forecastList"></div>
+        </div>
     </div>
 
     <script>
-        let currentLat = 59.4370; let currentLon = 24.7536; let currentCity = "Tallinn";
+        // Globaalsed muutujad
+        let currentLat = 59.4370; 
+        let currentLon = 24.7536;
 
-        function getWeatherInfo(code) {
-            if (code === 0) return ['☀️', 'Selge', 'sun'];
-            if (code >= 1 && code <= 3) return ['⛅', 'Pilvine', 'cloud'];
-            if (code >= 45 && code <= 48) return ['🌫️', 'Udu', 'cloud'];
-            if (code >= 51 && code <= 67) return ['🌧️', 'Vihm', 'rain'];
-            if (code >= 71 && code <= 77) return ['❄️', 'Lumi', 'snow'];
-            if (code >= 80 && code <= 82) return ['🌦️', 'Hoovihm', 'rain'];
-            if (code >= 95) return ['⚡', 'Äike', 'rain'];
-            return ['☁️', 'Pilves', 'cloud'];
+        // Ikoonide loogika (Nüüd arvestab ka ÖÖD)
+        function getIcon(code, isDay = 1) {
+            // isDay: 1 = Päev, 0 = Öö
+            
+            // Selge
+            if (code === 0) return isDay ? '☀️' : '🌙';
+            
+            // Vähene pilvisus
+            if (code >= 1 && code <= 3) return isDay ? '⛅' : '☁️';
+            
+            // Udu
+            if (code >= 45 && code <= 48) return '🌫️';
+            
+            // Vihm
+            if (code >= 51 && code <= 67) return '🌧️';
+            if (code >= 80 && code <= 82) return '🌦️';
+            
+            // Lumi
+            if (code >= 71 && code <= 77) return '❄️';
+            
+            // Äike
+            if (code >= 95) return '⚡';
+            
+            return '☁️';
         }
 
-        // LAE ANDMED (Lisatud hourly ja sunrise/sunset)
+        function getAnimType(code, isDay) {
+            if (code === 0 && isDay) return 'sun';
+            if (code === 0 && !isDay) return 'stars';
+            if (code >= 51 && code <= 67) return 'rain';
+            if (code >= 71 && code <= 77) return 'snow';
+            return 'cloud';
+        }
+
+        // --- PEAMINE FUNKTSIOON ---
         async function loadWeather(lat, lon, name) {
             document.getElementById('cityName').innerText = name;
-            // Küsib nüüd ka tunnipõhist infot ja päikesetõusu/loojangut
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code,precipitation_probability&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&timezone=auto`;
+            currentLat = lat; currentLon = lon;
+            
+            // NB! Lisasime 'hourly=is_day' päringusse
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code,precipitation_probability,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max&timezone=auto`;
 
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                renderApp(data);
-            } catch (e) { alert("Viga andmete laadimisel!"); console.error(e); }
+                renderUI(data);
+                checkAlerts(data);
+            } catch (e) {
+                console.error(e);
+            }
         }
 
-        function renderApp(data) {
-            const current = data.current;
+        function renderUI(data) {
+            const cur = data.current;
             const daily = data.daily;
             const hourly = data.hourly;
-            const info = getWeatherInfo(current.weather_code);
 
-            // ÖÖ / PÄEV Loogika
-            const isNight = current.is_day === 0;
-            if (isNight) {
-                document.body.classList.add('is-night');
-                if (info[2] === 'sun') info[2] = 'stars'; // Selge öö = tähed
-            } else {
-                document.body.classList.remove('is-night');
-            }
-            setAnimation(info[2]);
+            // 1. Taust ja Animatsioon
+            const isNight = cur.is_day === 0;
+            document.body.className = isNight ? 'is-night' : '';
+            
+            const icon = getIcon(cur.weather_code, cur.is_day);
+            const animType = getAnimType(cur.weather_code, cur.is_day);
+            setAnimation(animType);
 
-            // Praegune ilm
-            document.getElementById('currentTemp').innerText = Math.round(current.temperature_2m) + "°";
-            document.getElementById('weatherDesc').innerText = info[1];
+            // 2. Põhiandmed
+            document.getElementById('currentTemp').innerText = Math.round(cur.temperature_2m) + "°";
             document.getElementById('maxTemp').innerText = Math.round(daily.temperature_2m_max[0]);
             document.getElementById('minTemp').innerText = Math.round(daily.temperature_2m_min[0]);
-            document.getElementById('feelsLike').innerText = Math.round(current.apparent_temperature) + "°";
-            document.getElementById('windSpeed').innerText = Math.round(current.wind_speed_10m) + " km/h";
+            
+            // Kirjeldus (lihtne mapping)
+            const code = cur.weather_code;
+            let desc = "Selge";
+            if(code > 0) desc = "Pilvine";
+            if(code > 50) desc = "Vihm";
+            if(code > 70) desc = "Lumi";
+            document.getElementById('weatherDesc').innerText = desc;
+
+            // 3. Detailid
+            document.getElementById('feelsLike').innerText = Math.round(cur.apparent_temperature) + "°";
+            // Tuul m/s (API annab km/h, jagame 3.6)
+            document.getElementById('windSpeed').innerText = (cur.wind_speed_10m / 3.6).toFixed(1);
             document.getElementById('rainProb').innerText = daily.precipitation_probability_max[0] + "%";
 
-            // 7 PÄEVA + TUNNIVAADE
+            // 4. 7 Päeva + Tunnivaade
             const list = document.getElementById('forecastList');
             list.innerHTML = '';
 
             for(let i = 1; i < 7; i++) {
                 const date = new Date(daily.time[i]);
                 const dayName = date.toLocaleDateString('et-EE', { weekday: 'long' });
-                const dayInfo = getWeatherInfo(daily.weather_code[i]);
-                
-                // Tunnivaate genereerimine selle päeva jaoks
-                let hourlyHTML = '';
-                // Iga päev on 24h. Leiame õiged indeksid tunnivaate massiivist.
-                let startIdx = i * 24; 
-                let endIdx = startIdx + 24;
+                // Päeva ikoon (kasutame keskpäeva koodi, seega isDay=1)
+                const dIcon = getIcon(daily.weather_code[i], 1); 
 
-                // Näitame iga 3. tundi (et säästa ruumi)
-                for(let h = startIdx; h < endIdx; h += 3) {
-                    const hourDate = new Date(hourly.time[h]);
-                    const hourTime = hourDate.getHours() + ":00";
-                    const hInfo = getWeatherInfo(hourly.weather_code[h]);
+                // Tunnivaate ehitamine (24h)
+                let hourlyHTML = '';
+                let start = i * 24; 
+                let end = start + 24;
+                
+                // Võtame iga 3h tagant
+                for(let h = start; h < end; h+=3) {
+                    const hTime = new Date(hourly.time[h]).getHours() + ":00";
+                    const hTemp = Math.round(hourly.temperature_2m[h]);
+                    // Siin on VÕTI: Kasutame tunni is_day väärtust!
+                    const hIsDay = hourly.is_day[h];
+                    const hIcon = getIcon(hourly.weather_code[h], hIsDay);
+                    const hRain = hourly.precipitation_probability[h];
+                    
                     hourlyHTML += `
-                        <div class="hour-card">
-                            <div class="h-time">${hourTime}</div>
-                            <div class="h-icon">${hInfo[0]}</div>
-                            <div class="h-temp">${Math.round(hourly.temperature_2m[h])}°</div>
-                            <div class="h-pop"><i class="fas fa-droplet"></i> ${hourly.precipitation_probability[h]}%</div>
+                        <div class="hour-item">
+                            <div class="h-time">${hTime}</div>
+                            <div class="h-icon">${hIcon}</div>
+                            <div class="h-temp">${hTemp}°</div>
+                            ${hRain > 0 ? `<div class="h-rain">${hRain}%</div>` : ''}
                         </div>
                     `;
                 }
 
-                const item = document.createElement('div');
-                item.className = 'forecast-item';
-                item.innerHTML = `
-                    <div class="forecast-summary" onclick="this.parentElement.classList.toggle('open')">
-                        <div class="f-day">${dayName.charAt(0).toUpperCase() + dayName.slice(1)}</div>
-                        <div class="f-icon">${dayInfo[0]}</div>
-                        <div class="f-temp">
-                            <span class="temp-min">${Math.round(daily.temperature_2m_min[i])}°</span>
-                            <span class="temp-max">${Math.round(daily.temperature_2m_max[i])}°</span>
+                const row = document.createElement('div');
+                row.className = 'forecast-row';
+                row.onclick = function() {
+                    // Sulge teised
+                    document.querySelectorAll('.forecast-row').forEach(r => {
+                        if(r !== row) r.classList.remove('open');
+                    });
+                    row.classList.toggle('open');
+                };
+                
+                row.innerHTML = `
+                    <div style="width:100%">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div class="f-day">${dayName.charAt(0).toUpperCase() + dayName.slice(1)}</div>
+                            <div class="f-icon">${dIcon}</div>
+                            <div class="f-temps">
+                                <span class="tm-low">${Math.round(daily.temperature_2m_min[i])}°</span>
+                                <span class="tm-high">${Math.round(daily.temperature_2m_max[i])}°</span>
+                            </div>
+                        </div>
+                        <div class="hourly-slider">
+                            ${hourlyHTML}
                         </div>
                     </div>
-                    <div class="hourly-details">
-                        ${hourlyHTML}
-                    </div>
                 `;
-                list.appendChild(item);
+                list.appendChild(row);
             }
         }
 
-        function setAnimation(type) {
-            const layer = document.getElementById('anim-layer');
-            layer.innerHTML = ''; layer.className = 'weather-bg';
-            if (type === 'sun') {
-                const sun = document.createElement('div'); sun.className = 'sun-anim'; layer.appendChild(sun);
-            } else if (type === 'stars') {
-                layer.classList.add('stars-anim');
-            } else if (type === 'rain') layer.classList.add('rain-anim');
-            else if (type === 'snow') layer.classList.add('snow-anim');
+        // --- HOIATUSED ---
+        function checkAlerts(data) {
+            const card = document.getElementById('alertCard');
+            const msg = document.getElementById('alertMsg');
+            const minTemp = data.daily.temperature_2m_min[0];
+            const wind = data.current.wind_speed_10m / 3.6;
+            const rain = data.daily.precipitation_probability_max[0];
+            
+            let alertText = "";
+            
+            if (minTemp < -15) alertText = "Hoiatus: Erakordselt külm ilm!";
+            else if (wind > 15) alertText = "Hoiatus: Tugev tuul!";
+            else if (rain > 90) alertText = "Hoiatus: Oodata on tugevat sadu.";
+
+            if (alertText) {
+                msg.innerText = alertText;
+                card.style.display = "flex";
+            } else {
+                card.style.display = "none";
+            }
         }
 
+        // --- ANIMATSIOONID ---
+        function setAnimation(type) {
+            const layer = document.getElementById('anim-layer');
+            layer.innerHTML = '';
+            
+            if (type === 'stars') {
+                // Loome 50 plinkivat tähte
+                for(let i=0; i<50; i++) {
+                    const s = document.createElement('div');
+                    s.className = 'star';
+                    s.style.left = Math.random() * 100 + '%';
+                    s.style.top = Math.random() * 60 + '%'; // Ainult ülemine osa
+                    s.style.width = Math.random() * 3 + 'px';
+                    s.style.height = s.style.width;
+                    s.style.animationDelay = Math.random() * 5 + 's';
+                    s.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                    layer.appendChild(s);
+                }
+            }
+            else if (type === 'sun') {
+                const s = document.createElement('div'); s.className = 'sun-anim'; layer.appendChild(s);
+            }
+            else if (type === 'rain') { layer.classList.add('rain-anim'); }
+            else if (type === 'snow') { layer.classList.add('snow-anim'); }
+            
+            // Eemalda vanad klassid
+            layer.className = 'weather-bg ' + (type === 'rain' ? 'rain-anim' : type === 'snow' ? 'snow-anim' : '');
+        }
+
+        // --- RADAR ---
+        function openRadar() {
+            const modal = document.getElementById('radarModal');
+            const container = document.getElementById('radarContainer');
+            // Kasutame RainVieweri embedi
+            container.innerHTML = `<iframe src="https://www.rainviewer.com/map.html?loc=${currentLat},${currentLon},7&oFa=0&oC=0&oU=0&oCS=1&oF=0&oAP=1&c=1&o=83&lm=1&layer=radar&sm=1&sn=1"></iframe>`;
+            modal.style.display = 'block';
+        }
+        function closeRadar() {
+            document.getElementById('radarModal').style.display = 'none';
+            document.getElementById('radarContainer').innerHTML = ''; // Säästab mälu
+        }
+
+        // --- GPS & OTSING ---
         function getMyLocation() {
+            const btn = document.getElementById('gpsBtn');
+            btn.classList.add('loading');
+            
             if (navigator.geolocation) {
-                document.getElementById('cityName').innerText = "Otsin...";
                 navigator.geolocation.getCurrentPosition(pos => {
                     const lat = pos.coords.latitude; const lon = pos.coords.longitude;
-                    // Leiame linna nime
                     fetch(`https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=et`)
                         .then(r => r.json())
                         .then(data => {
-                            let name = "Minu Asukoht";
-                            if (data.results && data.results[0]) name = data.results[0].name;
-                             loadWeather(lat, lon, name);
+                            let name = data.results && data.results[0] ? data.results[0].name : "Minu Asukoht";
+                            loadWeather(lat, lon, name);
+                            btn.classList.remove('loading');
                         });
-                }, () => { alert("GPS viga."); loadWeather(currentLat, currentLon, "Tallinn"); });
-            }
-        }
-
-        async function searchCity(query) {
-            const resultsDiv = document.getElementById('searchResults');
-            if (query.length < 3) { resultsDiv.style.display = 'none'; return; }
-            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=5&language=et&format=json`);
-            const data = await res.json();
-            if (data.results) {
-                resultsDiv.innerHTML = ''; resultsDiv.style.display = 'block';
-                data.results.forEach(city => {
-                    const div = document.createElement('div');
-                    div.className = 'search-item';
-                    div.innerText = `${city.name}, ${city.country}`;
-                    div.onclick = () => {
-                        loadWeather(city.latitude, city.longitude, city.name);
-                        resultsDiv.style.display = 'none'; document.getElementById('citySearch').value = '';
-                    };
-                    resultsDiv.appendChild(div);
+                }, () => { 
+                    alert("GPS viga. Kontrolli õiguseid."); 
+                    btn.classList.remove('loading'); 
                 });
             }
         }
 
-        loadWeather(currentLat, currentLon, currentCity);
+        async function searchCity(query) {
+            const resDiv = document.getElementById('searchResults');
+            if (query.length < 3) { resDiv.style.display = 'none'; return; }
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=5&language=et&format=json`);
+            const data = await res.json();
+            if (data.results) {
+                resDiv.innerHTML = ''; resDiv.style.display = 'block';
+                data.results.forEach(city => {
+                    const d = document.createElement('div');
+                    d.className = 'search-item';
+                    d.innerText = `${city.name}, ${city.country}`;
+                    d.onclick = () => {
+                        loadWeather(city.latitude, city.longitude, city.name);
+                        resDiv.style.display = 'none'; document.getElementById('citySearch').value = '';
+                    };
+                    resDiv.appendChild(d);
+                });
+            }
+        }
+
+        // Start
+        loadWeather(59.4370, 24.7536, "Tallinn");
     </script>
 </body>
 </html>
