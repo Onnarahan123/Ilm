@@ -5,89 +5,286 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Ilm</title>
+    <title>Ilm Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --bg-gradient: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
         body {
-            font-family: -apple-system, sans-serif;
-            background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+            background: var(--bg-gradient);
             margin: 0;
-            padding: 40px 20px;
             color: white;
             min-height: 100vh;
-            box-sizing: border-box;
+            overflow-x: hidden;
+            transition: background 1s ease;
         }
-        .suur-info {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-top: 40px;
-        }
-        .suur-linn { font-size: 32px; font-weight: 600; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .suur-temp { font-size: 90px; font-weight: 200; margin: 10px 0; letter-spacing: -2px; }
-        .suur-ikoon { font-size: 40px; margin-bottom: 10px; }
-        .minmax { font-size: 18px; opacity: 0.9; font-weight: 500; }
 
-        .list { display: flex; flex-direction: column; gap: 15px; }
-        .kaart {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 15px 20px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255,255,255,0.3);
+        /* --- ANIMATSIOONID --- */
+        .weather-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        
+        /* Päike */
+        .sun-anim {
+            position: absolute; top: -50px; right: -50px; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(255,255,200,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
         }
-        .k-linn { font-size: 18px; font-weight: 600; }
-        .k-temp { font-size: 28px; font-weight: 400; }
-        .k-ikoon { font-size: 24px; }
-        .loading { text-align: center; margin-top: 50px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Vihm */
+        .rain-anim {
+            background: url('https://i.imgur.com/VuT5t6W.png'); /* Lihtne vihmapiisad */
+            animation: rain 1s linear infinite;
+        }
+        @keyframes rain { 0% { background-position: 0 0; } 100% { background-position: -20px 500px; } }
+
+        /* Lumi */
+        .snow-anim {
+            background-image: radial-gradient(4px 4px at 100px 50px, #fff, transparent), 
+                              radial-gradient(6px 6px at 200px 150px, #fff, transparent), 
+                              radial-gradient(3px 3px at 300px 250px, #fff, transparent);
+            background-size: 200px 200px;
+            animation: snow 3s linear infinite;
+        }
+        @keyframes snow { 100% { background-position: 500px 500px; } }
+
+        /* --- UI KUJUNDUS --- */
+        .container { padding: 60px 20px 20px 20px; max-width: 600px; margin: 0 auto; }
+        
+        /* Päis ja otsing */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .location-btn { background: rgba(255,255,255,0.2); border: none; padding: 10px; border-radius: 50%; color: white; cursor: pointer; backdrop-filter: blur(10px); }
+        .search-box { flex: 1; margin: 0 10px; position: relative; }
+        .search-input { width: 100%; padding: 10px 15px; border-radius: 20px; border: none; background: rgba(255,255,255,0.2); color: white; backdrop-filter: blur(10px); outline: none; }
+        .search-input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-results { position: absolute; top: 45px; width: 100%; background: rgba(0,0,0,0.8); border-radius: 15px; overflow: hidden; display: none; z-index: 100; }
+        .search-item { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+
+        /* Praegune ilm */
+        .current-weather { text-align: center; margin-bottom: 40px; }
+        .city-name { font-size: 36px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .temp-huge { font-size: 96px; font-weight: 200; letter-spacing: -3px; margin: 10px 0; }
+        .desc { font-size: 22px; font-weight: 500; text-transform: capitalize; margin-bottom: 10px; }
+        
+        /* Detailid (Tuul, Sademed jne) */
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 30px; }
+        .detail-card { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 15px; padding: 15px; text-align: center; }
+        .detail-icon { font-size: 20px; margin-bottom: 5px; opacity: 0.9; }
+        .detail-val { font-size: 16px; font-weight: 600; }
+        .detail-label { font-size: 12px; opacity: 0.7; }
+
+        /* 7 Päeva Ennustus */
+        .forecast-title { font-size: 18px; font-weight: 600; margin-bottom: 15px; opacity: 0.9; }
+        .forecast-list { display: flex; flex-direction: column; gap: 10px; }
+        .forecast-row { 
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 18px; backdrop-filter: blur(5px);
+        }
+        .f-day { width: 100px; font-weight: 600; }
+        .f-icon { font-size: 20px; text-align: center; width: 40px; }
+        .f-temp { text-align: right; width: 100px; }
+        .temp-max { font-weight: 600; margin-left: 10px; }
+        .temp-min { opacity: 0.6; }
+
     </style>
 </head>
 <body>
-    <div id="app"><div class="loading">Laen ilmateadet...</div></div>
+
+    <div id="anim-layer" class="weather-bg"></div>
+
+    <div class="container">
+        <div class="top-bar">
+            <button class="location-btn" onclick="getMyLocation()"><i class="fas fa-location-arrow"></i></button>
+            <div class="search-box">
+                <input type="text" class="search-input" id="citySearch" placeholder="Otsi linna..." onkeyup="searchCity(this.value)">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <button class="location-btn" onclick="toggleFavs()"><i class="fas fa-star"></i></button>
+        </div>
+
+        <div class="current-weather" id="main-view">
+            <div class="city-name" id="cityName">Laen...</div>
+            <div class="desc" id="weatherDesc">...</div>
+            <div class="temp-huge" id="currentTemp">--°</div>
+            <div style="font-size: 16px; opacity: 0.8">H: <span id="maxTemp">--</span>° L: <span id="minTemp">--</span>°</div>
+        </div>
+
+        <div class="details-grid">
+            <div class="detail-card">
+                <div class="detail-icon"><i class="fas fa-temperature-high"></i></div>
+                <div class="detail-val" id="feelsLike">--°</div>
+                <div class="detail-label">Tundub nagu</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-icon"><i class="fas fa-wind"></i></div>
+                <div class="detail-val" id="windSpeed">-- km/h</div>
+                <div class="detail-label">Tuul</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-icon"><i class="fas fa-umbrella"></i></div>
+                <div class="detail-val" id="rainProb">--%</div>
+                <div class="detail-label">Sadu</div>
+            </div>
+        </div>
+
+        <div class="forecast-title"><i class="fas fa-calendar-alt"></i> 7 päeva ennustus</div>
+        <div class="forecast-list" id="forecastList">
+            </div>
+    </div>
 
     <script>
-        fetch('ilm.json?v=' + new Date().getTime())
-            .then(r => r.json())
-            .then(data => {
-                const app = document.getElementById('app');
-                app.innerHTML = '';
+        // Vaikimisi Tallinn
+        let currentLat = 59.4370;
+        let currentLon = 24.7536;
+        let currentCity = "Tallinn";
 
-                // 1. Esimene linn suurelt (Tallinn)
-                const peamine = data[0];
-                const header = document.createElement('div');
-                header.className = 'suur-info';
-                header.innerHTML = `
-                    <div class="suur-linn">${peamine.nimi}</div>
-                    <div class="suur-temp">${peamine.temp}°</div>
-                    <div class="minmax">${peamine.ikoon} | H: ${peamine.max}° L: ${peamine.min}°</div>
+        // Ilmakoodide tõlkija
+        function getWeatherInfo(code) {
+            // Tagastab [Ikoon, Kirjeldus, Taustatüüp]
+            if (code === 0) return ['☀️', 'Selge', 'sun'];
+            if (code >= 1 && code <= 3) return ['⛅', 'Pilvine', 'cloud'];
+            if (code >= 45 && code <= 48) return ['🌫️', 'Udu', 'cloud'];
+            if (code >= 51 && code <= 67) return ['🌧️', 'Vihm', 'rain'];
+            if (code >= 71 && code <= 77) return ['❄️', 'Lumi', 'snow'];
+            if (code >= 80 && code <= 82) return ['🌦️', 'Hoovihm', 'rain'];
+            if (code >= 95) return ['⚡', 'Äike', 'rain'];
+            return ['☁️', 'Pilves', 'cloud'];
+        }
+
+        // 1. PÕHIFUNKTSIOON: Lae andmed
+        async function loadWeather(lat, lon, name) {
+            document.getElementById('cityName').innerText = name;
+            
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                renderApp(data);
+            } catch (e) {
+                alert("Viga andmete laadimisel!");
+            }
+        }
+
+        // 2. KUVAMINE
+        function renderApp(data) {
+            const current = data.current;
+            const daily = data.daily;
+            const info = getWeatherInfo(current.weather_code);
+
+            // Praegune ilm
+            document.getElementById('currentTemp').innerText = Math.round(current.temperature_2m) + "°";
+            document.getElementById('weatherDesc').innerText = info[1];
+            document.getElementById('maxTemp').innerText = Math.round(daily.temperature_2m_max[0]);
+            document.getElementById('minTemp').innerText = Math.round(daily.temperature_2m_min[0]);
+            
+            // Detailid
+            document.getElementById('feelsLike').innerText = Math.round(current.apparent_temperature) + "°";
+            document.getElementById('windSpeed').innerText = Math.round(current.wind_speed_10m) + " km/h";
+            document.getElementById('rainProb').innerText = daily.precipitation_probability_max[0] + "%";
+
+            // Animatsiooni vahetamine
+            setAnimation(info[2]);
+
+            // 7 Päeva nimekiri
+            const list = document.getElementById('forecastList');
+            list.innerHTML = ''; // Tühjenda vana
+
+            for(let i = 1; i < 7; i++) { // Alustame homsest (i=1)
+                const date = new Date(daily.time[i]);
+                const dayName = date.toLocaleDateString('et-EE', { weekday: 'long' });
+                const dayInfo = getWeatherInfo(daily.weather_code[i]);
+                
+                const html = `
+                    <div class="forecast-row">
+                        <div class="f-day">${dayName}</div>
+                        <div class="f-icon">${dayInfo[0]}</div>
+                        <div class="f-temp">
+                            <span class="temp-min">${Math.round(daily.temperature_2m_min[i])}°</span>
+                            <span class="temp-max">${Math.round(daily.temperature_2m_max[i])}°</span>
+                        </div>
+                    </div>
                 `;
-                app.appendChild(header);
+                list.innerHTML += html;
+            }
+        }
 
-                // 2. Ülejäänud listina
-                const list = document.createElement('div');
-                list.className = 'list';
+        // 3. ANIMATSIOONID
+        function setAnimation(type) {
+            const layer = document.getElementById('anim-layer');
+            const body = document.body;
+            layer.innerHTML = ''; // Puhasta vanad
+            layer.className = 'weather-bg'; // Reset
 
-                data.forEach((linn, index) => {
-                    if (index === 0) return; // Ära näita esimest topelt
-                    const div = document.createElement('div');
-                    div.className = 'kaart';
-                    div.innerHTML = `
-                        <div class="k-vasak">
-                            <div class="k-linn">${linn.nimi}</div>
-                            <div style="font-size:12px; opacity:0.8;">Sadu: ${linn.sadu}mm</div>
-                        </div>
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <div class="k-ikoon">${linn.ikoon}</div>
-                            <div class="k-temp">${linn.temp}°</div>
-                        </div>
-                    `;
-                    list.appendChild(div);
+            if (type === 'sun') {
+                body.style.background = 'linear-gradient(180deg, #4facfe 0%, #00f2fe 100%)';
+                const sun = document.createElement('div');
+                sun.className = 'sun-anim';
+                layer.appendChild(sun);
+            } 
+            else if (type === 'rain') {
+                body.style.background = 'linear-gradient(180deg, #373B44 0%, #4286f4 100%)';
+                layer.classList.add('rain-anim');
+            }
+            else if (type === 'snow') {
+                body.style.background = 'linear-gradient(180deg, #83a4d4 0%, #b6fbff 100%)';
+                layer.classList.add('snow-anim');
+            }
+            else { // Pilves
+                body.style.background = 'linear-gradient(180deg, #636fa4 0%, #e8e8e8 100%)';
+            }
+        }
+
+        // 4. GPS ASUKOHT
+        function getMyLocation() {
+            if (navigator.geolocation) {
+                document.getElementById('cityName').innerText = "Otsin asukohta...";
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    // Proovime leida linna nime koordinaatide järgi
+                    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+                        .then(() => loadWeather(lat, lon, "Minu Asukoht"));
+                }, () => {
+                    alert("Ei saanud asukohta kätte. Veendu, et GPS on lubatud.");
+                    loadWeather(currentLat, currentLon, "Tallinn"); // Tagavara
                 });
-                app.appendChild(list);
-            });
+            } else {
+                alert("Sinu brauser ei toeta asukoha määramist.");
+            }
+        }
+
+        // 5. OTSING (Geocoding)
+        async function searchCity(query) {
+            const resultsDiv = document.getElementById('searchResults');
+            if (query.length < 3) { resultsDiv.style.display = 'none'; return; }
+
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${query}&count=5&language=et&format=json`);
+            const data = await res.json();
+
+            if (data.results) {
+                resultsDiv.innerHTML = '';
+                resultsDiv.style.display = 'block';
+                data.results.forEach(city => {
+                    const div = document.createElement('div');
+                    div.className = 'search-item';
+                    div.innerText = `${city.name}, ${city.country_code}`;
+                    div.onclick = () => {
+                        loadWeather(city.latitude, city.longitude, city.name);
+                        resultsDiv.style.display = 'none';
+                        document.getElementById('citySearch').value = '';
+                    };
+                    resultsDiv.appendChild(div);
+                });
+            }
+        }
+
+        // Käivita alguses Tallinnaga
+        loadWeather(currentLat, currentLon, currentCity);
+
     </script>
 </body>
 </html>
