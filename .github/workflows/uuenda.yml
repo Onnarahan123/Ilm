@@ -1,0 +1,25 @@
+name: Uuenda Ilma
+on:
+  schedule:
+    - cron: '0 * * * *' # Iga tund
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Installi
+        run: pip install requests
+      - name: Käivita skript
+        run: python weather.py
+      - name: Salvesta
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ilm.json
+          git commit -m "Ilm uuendatud" || exit 0
+          git push
