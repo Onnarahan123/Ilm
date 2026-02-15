@@ -11,7 +11,7 @@
     {
         "nimi": "Tartu",
         "temp": -8,
-        "tuul": 9.4,
+        "tuul": 11.5,
         "ikoon": "⛅",
         "min": -18,
         "max": -8,
@@ -19,17 +19,17 @@
     },
     {
         "nimi": "Pärnu",
-        "temp": -6,
+        "temp": -5,
         "tuul": 15.5,
         "ikoon": "⛅",
         "min": -19,
-        "max": -5,
+        "max": -4,
         "sadu": 0.0
     },
     {
         "nimi": "Kuressaare",
-        "temp": -3,
-        "tuul": 10.8,
+        "temp": -4,
+        "tuul": 9.7,
         "ikoon": "⛅",
         "min": -21,
         "max": -1,
