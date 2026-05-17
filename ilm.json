@@ -1,18 +1,18 @@
 [
     {
         "nimi": "Tallinn",
-        "temp": 12,
-        "tuul": 10.4,
-        "ikoon": "⛅",
+        "temp": 14,
+        "tuul": 9.0,
+        "ikoon": "☀️",
         "min": 10,
         "max": 15,
         "sadu": 0.0
     },
     {
         "nimi": "Tartu",
-        "temp": 16,
-        "tuul": 5.0,
-        "ikoon": "🌧️",
+        "temp": 17,
+        "tuul": 6.1,
+        "ikoon": "⛅",
         "min": 13,
         "max": 17,
         "sadu": 8.0
@@ -38,7 +38,7 @@
     {
         "nimi": "Viljandi",
         "temp": 15,
-        "tuul": 2.9,
+        "tuul": 2.5,
         "ikoon": "⛅",
         "min": 10,
         "max": 15,
