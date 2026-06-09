@@ -6,39 +6,39 @@
         "ikoon": "⛅",
         "min": 14,
         "max": 19,
-        "sadu": 1.1
+        "sadu": 1.6
     },
     {
         "nimi": "Tartu",
         "temp": 14,
-        "tuul": 8.6,
-        "ikoon": "☀️",
+        "tuul": 5.8,
+        "ikoon": "⛅",
         "min": 13,
         "max": 21,
-        "sadu": 0.5
+        "sadu": 0.9
     },
     {
         "nimi": "Pärnu",
-        "temp": 15,
-        "tuul": 10.8,
+        "temp": 13,
+        "tuul": 8.6,
         "ikoon": "⛅",
-        "min": 14,
+        "min": 13,
         "max": 18,
-        "sadu": 3.2
+        "sadu": 2.0
     },
     {
         "nimi": "Kuressaare",
         "temp": 16,
-        "tuul": 15.5,
+        "tuul": 23.4,
         "ikoon": "⛅",
         "min": 14,
         "max": 18,
-        "sadu": 3.7
+        "sadu": 0.7
     },
     {
         "nimi": "Viljandi",
-        "temp": 12,
-        "tuul": 6.5,
+        "temp": 11,
+        "tuul": 4.7,
         "ikoon": "⛅",
         "min": 11,
         "max": 19,
