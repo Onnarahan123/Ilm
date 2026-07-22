@@ -19,7 +19,7 @@
     },
     {
         "nimi": "Pärnu",
-        "temp": 12,
+        "temp": 13,
         "tuul": 5.0,
         "ikoon": "⛅",
         "min": 12,
@@ -29,7 +29,7 @@
     {
         "nimi": "Kuressaare",
         "temp": 14,
-        "tuul": 6.5,
+        "tuul": 6.1,
         "ikoon": "⛅",
         "min": 13,
         "max": 17,
