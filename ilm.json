@@ -2,7 +2,7 @@
     {
         "nimi": "Tallinn",
         "temp": 18,
-        "tuul": 14.8,
+        "tuul": 13.3,
         "ikoon": "⛅",
         "min": 17,
         "max": 25,
@@ -11,7 +11,7 @@
     {
         "nimi": "Tartu",
         "temp": 18,
-        "tuul": 10.1,
+        "tuul": 12.2,
         "ikoon": "⛅",
         "min": 17,
         "max": 22,
@@ -20,7 +20,7 @@
     {
         "nimi": "Pärnu",
         "temp": 18,
-        "tuul": 18.7,
+        "tuul": 19.1,
         "ikoon": "⛅",
         "min": 17,
         "max": 21,
@@ -28,7 +28,7 @@
     },
     {
         "nimi": "Kuressaare",
-        "temp": 18,
+        "temp": 20,
         "tuul": 15.8,
         "ikoon": "⛅",
         "min": 16,
@@ -37,11 +37,11 @@
     },
     {
         "nimi": "Viljandi",
-        "temp": 15,
-        "tuul": 11.2,
+        "temp": 16,
+        "tuul": 12.6,
         "ikoon": "⛅",
         "min": 14,
-        "max": 21,
+        "max": 20,
         "sadu": 0.0
     }
 ]
