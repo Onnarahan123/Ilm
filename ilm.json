@@ -2,7 +2,7 @@
     {
         "nimi": "Tallinn",
         "temp": 17,
-        "tuul": 14.4,
+        "tuul": 15.5,
         "ikoon": "⛅",
         "min": 16,
         "max": 20,
@@ -11,16 +11,16 @@
     {
         "nimi": "Tartu",
         "temp": 14,
-        "tuul": 9.4,
-        "ikoon": "⛅",
+        "tuul": 9.7,
+        "ikoon": "☀️",
         "min": 12,
         "max": 19,
         "sadu": 5.9
     },
     {
         "nimi": "Pärnu",
-        "temp": 15,
-        "tuul": 7.6,
+        "temp": 14,
+        "tuul": 9.0,
         "ikoon": "⛅",
         "min": 14,
         "max": 20,
